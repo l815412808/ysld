@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dao.IOrderDao" >
+  <resultMap id="BaseResultMap" type="com.entity.Order" >
+    <id column="oid" property="oid" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="rid" property="rid" jdbcType="INTEGER" />
+    <result column="number" property="number" jdbcType="INTEGER" />
+    <result column="total" property="total" jdbcType="DOUBLE" />
+    <result column="submissionTime" property="submissiontime" jdbcType="TIMESTAMP" />
+    <result column="paymentStatus" property="paymentstatus" jdbcType="INTEGER" />
+    <result column="receivingStatus" property="receivingstatus" jdbcType="INTEGER" />
+    <result column="showStatus" property="showstatus" jdbcType="INTEGER" />
+    <association property="receiving" column="rid" javaType="com.entity.Receiving">
+      <id column="rid" property="rid" jdbcType="INTEGER" />
+      <result column="uid" property="uid" jdbcType="INTEGER" />
+      <result column="raddress" property="raddress" jdbcType="VARCHAR" />
+      <result column="adressStatus" property="adressstatus" jdbcType="INTEGER" />
+    </association>
+    <collection property="ordetList" column="oid" javaType="java.util.List" ofType="com.entity.Orderdetails">
+      <id column="orid" property="orid" jdbcType="INTEGER" />
+      <result column="oid" property="oid" jdbcType="INTEGER" />
+      <result column="pid" property="pid" jdbcType="INTEGER" />
+      <result column="onumber" property="onumber" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    oid, uid, rid, number, total, submissionTime, paymentStatus, receivingStatus, showStatus
+  </sql>
+  <select id="selectMaxId" resultType="java.lang.Integer">
+    SELECT MAX(oid) FROM `order`
+  </select>
+  <select id="selectorders" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select * from `order` o
+    <where>
+      <if test="oid != null" >
+      and o.oid=  #{oid,jdbcType=INTEGER}
+      </if>
+      <if test="uid != null" >
+      and o.uid=  #{uid,jdbcType=INTEGER}
+      </if>
+      <if test="rid != null" >
+      and o.rid=  #{rid,jdbcType=INTEGER}
+      </if>
+      <if test="number != null" >
+       and o.number= #{number,jdbcType=INTEGER}
+      </if>
+      <if test="total != null" >
+      and o.tatal  LIKE "%"#{total,jdbcType=DOUBLE}"%"
+      </if>
+      <if test="submissiontime != null" >
+       and o.submissiontime LIKE "%"#{submissiontime,jdbcType=TIMESTAMP}"%"
+      </if>
+      <if test="paymentstatus != null" >
+      and o.paymentstatus=  #{paymentstatus,jdbcType=INTEGER}
+      </if>
+      <if test="receivingstatus != null" >
+      and o.receivingstatus=  #{receivingstatus,jdbcType=INTEGER}
+      </if>
+      <if test="showstatus != null" >
+       and o.showstatus= #{showstatus,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+  <update id="updateOrder" parameterType="java.util.Map" >
+    update `order`
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="rid != null" >
+        rid = #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=DOUBLE},
+      </if>
+      <if test="submissiontime != null" >
+        submissionTime = #{submissiontime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentstatus != null" >
+        paymentStatus = #{paymentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivingstatus != null" >
+        receivingStatus = #{receivingstatus,jdbcType=INTEGER},
+      </if>
+      <if test="showstatus != null" >
+        showStatus = #{showstatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <insert id="insertNewOrder" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="oid">
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="oid == null" >
+        oid,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="rid != null" >
+        rid,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="submissiontime != null" >
+        submissionTime,
+      </if>
+      <if test="paymentstatus != null" >
+        paymentStatus,
+      </if>
+      <if test="receivingstatus != null" >
+        receivingStatus,
+      </if>
+      <if test="showstatus != null" >
+        showStatus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="oid == null" >
+        DEFAULT ,
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="rid != null" >
+        #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=DOUBLE},
+      </if>
+      <if test="submissiontime != null" >
+        #{submissiontime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentstatus != null" >
+        #{paymentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivingstatus != null" >
+        #{receivingstatus,jdbcType=INTEGER},
+      </if>
+      <if test="showstatus != null" >
+        #{showstatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from `order`
+    where oid = #{oid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from `order`
+    where oid = #{oid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.entity.Order" >
+    insert into  `order` (oid, uid, rid,
+      number, total, submissionTime, 
+      paymentStatus, receivingStatus, showStatus
+      )
+    values (#{oid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{rid,jdbcType=INTEGER}, 
+      #{number,jdbcType=INTEGER}, #{total,jdbcType=DOUBLE}, #{submissiontime,jdbcType=TIMESTAMP}, 
+      #{paymentstatus,jdbcType=INTEGER}, #{receivingstatus,jdbcType=INTEGER}, #{showstatus,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.entity.Order" >
+    insert into `order`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="oid != null" >
+        oid,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="rid != null" >
+        rid,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="total != null" >
+        total,
+      </if>
+      <if test="submissiontime != null" >
+        submissionTime,
+      </if>
+      <if test="paymentstatus != null" >
+        paymentStatus,
+      </if>
+      <if test="receivingstatus != null" >
+        receivingStatus,
+      </if>
+      <if test="showstatus != null" >
+        showStatus,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="oid != null" >
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="rid != null" >
+        #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        #{total,jdbcType=DOUBLE},
+      </if>
+      <if test="submissiontime != null" >
+        #{submissiontime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentstatus != null" >
+        #{paymentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivingstatus != null" >
+        #{receivingstatus,jdbcType=INTEGER},
+      </if>
+      <if test="showstatus != null" >
+        #{showstatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.entity.Order" >
+    update `order`
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="rid != null" >
+        rid = #{rid,jdbcType=INTEGER},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="total != null" >
+        total = #{total,jdbcType=DOUBLE},
+      </if>
+      <if test="submissiontime != null" >
+        submissionTime = #{submissiontime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentstatus != null" >
+        paymentStatus = #{paymentstatus,jdbcType=INTEGER},
+      </if>
+      <if test="receivingstatus != null" >
+        receivingStatus = #{receivingstatus,jdbcType=INTEGER},
+      </if>
+      <if test="showstatus != null" >
+        showStatus = #{showstatus,jdbcType=INTEGER},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.entity.Order" >
+    update `order`
+    set uid = #{uid,jdbcType=INTEGER},
+      rid = #{rid,jdbcType=INTEGER},
+      number = #{number,jdbcType=INTEGER},
+      total = #{total,jdbcType=DOUBLE},
+      submissionTime = #{submissiontime,jdbcType=TIMESTAMP},
+      paymentStatus = #{paymentstatus,jdbcType=INTEGER},
+      receivingStatus = #{receivingstatus,jdbcType=INTEGER},
+      showStatus = #{showstatus,jdbcType=INTEGER}
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+</mapper>
